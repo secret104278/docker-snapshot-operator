@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docker-snapshot-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: docker-snapshot-operator
+  template:
+    metadata:
+      labels:
+        name: docker-snapshot-operator
+    spec:
+      serviceAccountName: docker-snapshot-operator
+      containers:
+        - name: docker-snapshot-operator
+          # Replace this with the built image name
+          image: REPLACE_IMAGE
+          command:
+          - docker-snapshot-operator
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "docker-snapshot-operator"
